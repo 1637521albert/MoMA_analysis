@@ -207,7 +207,6 @@ results_long <- results_norm %>%
                          "Diameter_norm" = "Diameter",
                          "Components_norm" = "Components"))
 
-# Graficar todas las métricas en un mismo plot
 plt <- ggplot(results_long, aes(x = factor(Decade), y = Value, group = Metric, color = Metric)) +
   geom_line(size = 1) +
   geom_point(size = 2) +
@@ -290,15 +289,15 @@ results_cent_long <- results_cent_norm %>%
                names_to = "Metric", 
                values_to = "Value") %>% 
   mutate(Metric = recode(Metric,
-                         "AvgDegree_norm" = "Grado promedio",
-                         "AvgBetweenness_norm" = "Intermediación promedio"))
+                         "AvgDegree_norm" = "Average Degree",
+                         "AvgBetweenness_norm" = "Average Betweenness"))
 
 plt_cent <- ggplot(results_cent_long, aes(x = factor(Decade), y = Value, group = Metric, color = Metric)) +
   geom_line(size = 1) +
   geom_point(size = 2) +
-  labs(title = "Evolución normalizada de las métricas de centralidad por década",
-       x = "Década",
-       y = "Valor normalizado (0-1)") +
+  labs(title = "Evolution of centrality metrics by decade",
+       x = "Decade",
+       y = "Normalized Value [0,1]") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -386,10 +385,10 @@ plot_attribute_by_community <- function(g, attribute, title_suffix = "") {
   p <- ggplot(df_counts, aes(x = community, y = count, fill = attribute_value)) +
     geom_bar(stat = "identity", position = "fill") +
     coord_flip() +
-    labs(x = "Comunidad",
-         y = "Proporción",
+    labs(x = "Community",
+         y = "Proportion",
          fill = attribute,
-         title = paste(attribute, "por comunidad", title_suffix)) +
+         title = paste(attribute, "per community", title_suffix)) +
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5, size = 11),
           axis.text = element_text(size = 9),
@@ -409,8 +408,8 @@ for (year in decades) {
   filename <- paste0(year, ".gml")
   g <- read_graph(filename, format = "gml")
 
-  p_gender <- plot_attribute_by_community(g, "Gender", title_suffix = paste("- Década", year))
-  p_nat <- plot_attribute_by_community(g, "Nationality", title_suffix = paste("- Década", year))
+  p_gender <- plot_attribute_by_community(g, "Gender", title_suffix = paste("- Decade", year))
+  p_nat <- plot_attribute_by_community(g, "Nationality", title_suffix = paste("- Decade", year))
 
   combined <- (p_gender | p_nat) + 
     plot_layout(guides = "collect") & 
